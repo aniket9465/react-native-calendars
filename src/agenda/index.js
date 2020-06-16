@@ -96,12 +96,8 @@ export default class AgendaView extends Component {
     onMomentumScrollEnd: PropTypes.func,
     /** Boolean variable to determine if month-reservation-list should be used */
     useMonthReservationList: PropTypes.bool,
-    /** Cards height to be used in MonthReservationList */
-    cardsHeight: PropTypes.shape({
-      noSchedule: PropTypes.number,
-      dateHeader: PropTypes.number,
-      postCell: PropTypes.number,
-    }),
+    /** Function to get cards height to be used in MonthReservationList */
+    getCardHeight: PropTypes.func,
   };
 
   constructor(props) {
@@ -326,6 +322,7 @@ export default class AgendaView extends Component {
           ref={(c) => (this.list = c)}
           theme={this.props.theme}
           cardsHeight={this.props.cardsHeight}
+          getCardHeight={this.props.getCardHeight}
         />
       );
     } else {

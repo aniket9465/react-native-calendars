@@ -37,11 +37,7 @@ class MonthReservationList extends Component {
     onScrollEndDrag: PropTypes.func,
     onMomentumScrollBegin: PropTypes.func,
     onMomentumScrollEnd: PropTypes.func,
-    cardsHeight: PropTypes.shape({
-      noSchedule: PropTypes.number,
-      dateHeader: PropTypes.number,
-      postCell: PropTypes.number,
-    }).isRequired,
+    getCardHeight:PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -204,23 +200,12 @@ class MonthReservationList extends Component {
     return {reservations, scrollPosition};
   }
 
-  getHeight(obj) {
-    if (obj.reservation === undefined) {
-      return (
-        this.props.cardsHeight.noSchedule + this.props.cardsHeight.dateHeader
-      );
-    }
-    if (obj.date === false) {
-      return this.props.cardsHeight.postCell;
-    }
-    return this.props.cardsHeight.postCell + this.props.cardsHeight.dateHeader;
-  }
   getItemLayout = (data, index) => {
     let offset = 0;
     for (let i = 0; i < index; ++i) {
-      offset += this.getHeight(data[i]);
+      offset += this.props.getCardHeight(data[i]);
     }
-    return {length: this.getHeight(data[index]), offset, index};
+    return {length: this.props.getCardHeight(data[index]), offset, index};
   };
 
   render() {
