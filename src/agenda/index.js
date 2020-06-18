@@ -7,6 +7,7 @@ import {parseDate, xdateToData} from '../interface';
 import dateutils from '../dateutils';
 import CalendarList from '../calendar-list';
 import ReservationsList from './reservation-list';
+import MonthReservationsList from './month-reservation-list';
 import styleConstructor from './style';
 import {VelocityTracker} from '../input';
 import {AGENDA_CALENDAR_KNOB} from '../testIDs';
@@ -92,7 +93,11 @@ export default class AgendaView extends Component {
     /** Called when the momentum scroll starts for the agenda list. **/
     onMomentumScrollBegin: PropTypes.func,
     /** Called when the momentum scroll stops for the agenda list. **/
-    onMomentumScrollEnd: PropTypes.func
+    onMomentumScrollEnd: PropTypes.func,
+    /** Boolean variable to determine if month-reservation-list should be used */
+    useMonthReservationList: PropTypes.bool,
+    /** Function to get cards height to be used in MonthReservationList */
+    getCardHeight: PropTypes.func,
   };
 
   constructor(props) {
@@ -156,7 +161,7 @@ export default class AgendaView extends Component {
   }
 
   setScrollPadPosition(y, animated) {
-    this.scrollPad.scrollTo({x: 0, y, animated});
+    this.scrollPad.getNode().scrollTo({x: 0, y, animated});
   }
 
   onScrollPadLayout() {
@@ -294,29 +299,57 @@ export default class AgendaView extends Component {
   }
 
   renderReservations() {
-    return (
-      <ReservationsList
-        onScrollBeginDrag={this.props.onScrollBeginDrag}
-        onScrollEndDrag={this.props.onScrollEndDrag}
-        onMomentumScrollBegin={this.props.onMomentumScrollBegin}
-        onMomentumScrollEnd={this.props.onMomentumScrollEnd}
-        refreshControl={this.props.refreshControl}
-        refreshing={this.props.refreshing}
-        onRefresh={this.props.onRefresh}
-        rowHasChanged={this.props.rowHasChanged}
-        renderItem={this.props.renderItem}
-        renderDay={this.props.renderDay}
-        renderEmptyDate={this.props.renderEmptyDate}
-        reservations={this.props.items}
-        selectedDay={this.state.selectedDay}
-        renderEmptyData={this.props.renderEmptyData}
-        topDay={this.state.topDay}
-        onDayChange={this.onDayChange.bind(this)}
-        onScroll={() => { }}
-        ref={(c) => this.list = c}
-        theme={this.props.theme}
-      />
-    );
+    if (this.props.useMonthReservationList) {
+      return (
+        <MonthReservationsList
+          onScrollBeginDrag={this.props.onScrollBeginDrag}
+          onScrollEndDrag={this.props.onScrollEndDrag}
+          onMomentumScrollBegin={this.props.onMomentumScrollBegin}
+          onMomentumScrollEnd={this.props.onMomentumScrollEnd}
+          refreshControl={this.props.refreshControl}
+          refreshing={this.props.refreshing}
+          onRefresh={this.props.onRefresh}
+          rowHasChanged={this.props.rowHasChanged}
+          renderItem={this.props.renderItem}
+          renderDay={this.props.renderDay}
+          renderEmptyDate={this.props.renderEmptyDate}
+          reservations={this.props.items}
+          selectedDay={this.state.selectedDay}
+          renderEmptyData={this.props.renderEmptyData}
+          topDay={this.state.topDay}
+          onDayChange={this.onDayChange.bind(this)}
+          onScroll={() => {}}
+          ref={(c) => (this.list = c)}
+          theme={this.props.theme}
+          cardsHeight={this.props.cardsHeight}
+          getCardHeight={this.props.getCardHeight}
+        />
+      );
+    } else {
+      return (
+        <ReservationsList
+          onScrollBeginDrag={this.props.onScrollBeginDrag}
+          onScrollEndDrag={this.props.onScrollEndDrag}
+          onMomentumScrollBegin={this.props.onMomentumScrollBegin}
+          onMomentumScrollEnd={this.props.onMomentumScrollEnd}
+          refreshControl={this.props.refreshControl}
+          refreshing={this.props.refreshing}
+          onRefresh={this.props.onRefresh}
+          rowHasChanged={this.props.rowHasChanged}
+          renderItem={this.props.renderItem}
+          renderDay={this.props.renderDay}
+          renderEmptyDate={this.props.renderEmptyDate}
+          reservations={this.props.items}
+          selectedDay={this.state.selectedDay}
+          renderEmptyData={this.props.renderEmptyData}
+          topDay={this.state.topDay}
+          onDayChange={this.onDayChange.bind(this)}
+          onScroll={() => {}}
+          ref={(c) => (this.list = c)}
+          theme={this.props.theme}
+        />
+      );
+    }
   }
 
   onDayChange(day) {
